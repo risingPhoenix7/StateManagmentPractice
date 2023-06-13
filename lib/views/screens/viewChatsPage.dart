@@ -26,6 +26,12 @@ class _ViewChatsPageState extends State<ViewChatsPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: BlocBuilder<ChatBloc, ChatState>(
+        buildWhen: (previous, current) {
+          if (current is MessagesUpdated && previous is ChatInitial) {
+            return true;
+          }
+          return false;
+        },
         builder: (context, state) {
           if (state is MessagesUpdated) {
             return const Column(children: [
@@ -63,8 +69,8 @@ class ChatMessageWidget extends StatelessWidget {
         );
       },
       child: Container(
-        margin: EdgeInsets.all(8.0),
-        padding: EdgeInsets.all(8.0),
+        margin: const EdgeInsets.all(8.0),
+        padding: const EdgeInsets.all(8.0),
         decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.circular(10.0),
