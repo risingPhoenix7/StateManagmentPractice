@@ -1,0 +1,52 @@
+[
+  {
+    "isLeft": true,
+    "text": "Hey, Sasuke! How have you been?",
+    "dateTime": "2023-06-13T10:00:00"
+  },
+  {
+    "isLeft": false,
+    "text": "I've been fine, Naruto. Just training as usual.",
+    "dateTime": "2023-06-13T10:05:00"
+  },
+  {
+    "isLeft": true,
+    "text": "That's good to hear! We should spar sometime.",
+    "dateTime": "2023-06-13T10:10:00"
+  },
+  {
+    "isLeft": false,
+    "text": "Sure, I'm always up for a challenge. Let's do it!",
+    "dateTime": "2023-06-13T10:15:00"
+  },
+  {
+    "isLeft": true,
+    "text": "Great! How about tomorrow at the training grounds?",
+    "dateTime": "2023-06-13T10:20:00"
+  },
+  {
+    "isLeft": false,
+    "text": "Sounds good. I'll meet you there at noon.",
+    "dateTime": "2023-06-13T10:25:00"
+  },
+  {
+    "isLeft": true,
+    "text": "Perfect. See you then, Sasuke!",
+    "dateTime": "2023-06-13T10:30:00"
+  },
+  {
+    "isLeft": false,
+    "text": "Looking forward to it, Naruto. Take care!",
+    "dateTime": "2023-06-13T10:35:00"
+  },
+  {
+    "isLeft": true,
+    "text": "You too, Sasuke. See you tomorrow!",
+    "dateTime": "2023-06-13T10:40:00"
+  },
+  {
+    "isLeft": false,
+    "text": "Absolutely. Until then!",
+    "dateTime": "2023-06-13T10:45:00"
+  }
+]
