@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
-import 'package:jio_task/models/user.dart';
+import 'package:jio_task/models/user/user.dart';
 
-import '../../models/message.dart';
+import '../../models/message/message.dart';
 import '../../viewmodel/chatBloc.dart';
 import '../../viewmodel/chatState.dart';
 import 'chatScreen.dart';

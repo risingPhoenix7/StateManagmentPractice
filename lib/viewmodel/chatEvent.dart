@@ -1,4 +1,4 @@
-import '../models/message.dart';
+import '../models/message/message.dart';
 abstract class ChatEvent {}
 
 class MessagesLoaded extends ChatEvent {}
@@ -21,6 +21,15 @@ class EmojiSelected extends ChatEvent {
 }
 class MessageReply extends ChatEvent {
   final int messageIndex;
+  bool isLeft;
 
-  MessageReply(this.messageIndex);
+  MessageReply({required this.messageIndex, required this.isLeft});
+}
+
+class MessageReplyDisabled extends ChatEvent {}
+
+class GoToIndex extends ChatEvent {
+  final int index;
+  final bool isLeft;
+  GoToIndex({required this.index, required this.isLeft});
 }

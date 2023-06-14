@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 
-import '../../models/message.dart';
-import '../../models/user.dart';
+import '../../models/message/message.dart';
+import '../../models/user/user.dart';
 import '../../viewmodel/chatBloc.dart';
 import '../../viewmodel/chatState.dart';
 import '../widgets/chatMessage.dart';
@@ -22,6 +23,7 @@ class _ChatScreenState extends State<ChatScreen> {
 
   @override
   void initState() {
+    messages = BlocProvider.of<ChatBloc>(context).getMessages();
     super.initState();
   }
 
@@ -34,10 +36,12 @@ class _ChatScreenState extends State<ChatScreen> {
   Widget build(BuildContext context) {
     ChatBloc chatBloc = BlocProvider.of<ChatBloc>(context);
     User otherUser = chatBloc.getUserDetails(!widget.isLeft);
+    ItemScrollController itemScrollController = ItemScrollController();
 
     return Scaffold(
       appBar: PreferredSize(
-        preferredSize: const Size.fromHeight(kToolbarHeight), // This is the default AppBar height
+        preferredSize: const Size.fromHeight(kToolbarHeight),
+        // This is the default AppBar height
         child: Container(
           decoration: const BoxDecoration(
             border: Border(
@@ -69,20 +73,38 @@ class _ChatScreenState extends State<ChatScreen> {
         ),
       ),
       body: BlocBuilder<ChatBloc, ChatState>(
+        buildWhen: (previous, current) =>
+            current is MessagesUpdated || current is ScrollToIndex,
         builder: (context, state) {
           if (state is MessagesUpdated) {
             messages = state.messages;
+            try {
+              itemScrollController.scrollTo(
+                  index: 0,
+                  duration: const Duration(milliseconds: 600),
+                  curve: Curves.easeInOutCubic);
+            } catch (e) {
+              print(e);
+            }
+          } else if (state is ScrollToIndex && state.isLeft == widget.isLeft) {
+            print("Scrolling to index ${state.index}");
+            itemScrollController.scrollTo(
+                index: messages.length - state.index - 1,
+                duration: const Duration(milliseconds: 600),
+                curve: Curves.easeInOutCubic);
           }
           return Column(children: <Widget>[
             Flexible(
-              child: ListView.builder(
+              child: ScrollablePositionedList.builder(
+                itemScrollController: itemScrollController,
                 reverse: true,
                 padding: const EdgeInsets.all(8.0),
                 itemBuilder: (_, int index) {
                   int actualIndex = messages.length - 1 - index;
                   return ChatMessageWidget(
                     message: messages[actualIndex],
-                    isLeft: messages[actualIndex].isLeft != widget.isLeft,
+                    indexInList: index,
+                    isLeft: widget.isLeft,
                     isFirstMessage: actualIndex == 0 ||
                         messages[actualIndex].dateTime.day !=
                             messages[actualIndex - 1].dateTime.day,
