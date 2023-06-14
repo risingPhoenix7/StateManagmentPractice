@@ -33,8 +33,11 @@ class ChatMessageWidget extends StatelessWidget {
       child: Column(
         children: [
           isFirstMessage
-              ? Text(formattedDate,
-                  style: Theme.of(context).textTheme.subtitle2)
+              ? Padding(
+                padding: const EdgeInsets.symmetric(vertical: 10),
+                child: Text(formattedDate,
+                    style: Theme.of(context).textTheme.subtitle2),
+              )
               : Container(),
           DraggableWidget(
             onSwipe: () {

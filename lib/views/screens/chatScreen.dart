@@ -88,10 +88,14 @@ class _ChatScreenState extends State<ChatScreen> {
             }
           } else if (state is ScrollToIndex && state.isLeft == widget.isLeft) {
             print("Scrolling to index ${state.index}");
-            itemScrollController.scrollTo(
-                index: messages.length - state.index - 1,
-                duration: const Duration(milliseconds: 600),
-                curve: Curves.easeInOutCubic);
+            try{
+              itemScrollController.scrollTo(
+                  index: messages.length - state.index - 1,
+                  duration: const Duration(milliseconds: 600),
+                  curve: Curves.easeInOutCubic);
+            } catch (e) {
+              print(e);
+            }
           }
           return Column(children: <Widget>[
             Flexible(
@@ -106,8 +110,10 @@ class _ChatScreenState extends State<ChatScreen> {
                     indexInList: index,
                     isLeft: widget.isLeft,
                     isFirstMessage: actualIndex == 0 ||
-                        messages[actualIndex].dateTime.day !=
-                            messages[actualIndex - 1].dateTime.day,
+                        ((messages[actualIndex].dateTime.day !=
+                            messages[actualIndex - 1].dateTime.day)||(messages[actualIndex].dateTime.month !=
+                            messages[actualIndex - 1].dateTime.month)||(messages[actualIndex].dateTime.year !=
+                            messages[actualIndex - 1].dateTime.year)),
                   );
                 },
                 itemCount: messages.length,
