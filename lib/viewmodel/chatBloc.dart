@@ -4,7 +4,8 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:jio_task/models/message/message.dart';
 import 'package:jio_task/models/user/user.dart';
-
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 import 'chatEvent.dart';
 import 'chatState.dart';
 
@@ -28,15 +29,16 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
 
     on<EmojiSelected>((event, emit) {
       if (editingMessageIndex != null && editingMessageIndex! >= 0) {
-        messages[editingMessageIndex!] = messages[editingMessageIndex!].copyWith(emoji: event.emoji);
+        messages[editingMessageIndex!] =
+            messages[editingMessageIndex!].copyWith(emoji: event.emoji);
         emit(MessagesUpdated(List.from(messages)));
         editingMessageIndex = null;
       }
     });
 
     on<MessageReply>((event, emit) {
-      emit(ReplyModeEnabled(
-          messages[messages.length-event.messageIndex-1], event.isLeft, messages.length-event.messageIndex-1));
+      emit(ReplyModeEnabled(messages[messages.length - event.messageIndex - 1],
+          event.isLeft, messages.length - event.messageIndex - 1));
     });
 
     on<MessageReplyDisabled>((event, emit) {
@@ -50,8 +52,8 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
 
   User getUserDetails(bool isLeft) {
     return isLeft
-        ? const User(id: 1, profilePic: 'images/naruto.png', name: 'Naruto')
-        : const User(id: 2, profilePic: 'images/sasuke.jpg', name: 'Sasuke');
+        ? const User(id: 1, profilePic: "assets/images/naruto.png", name: 'Naruto')
+        : const User(id: 2, profilePic: "assets/images/sasuke.jpg", name: 'Sasuke');
   }
 
   Message getLastMessage() {
@@ -60,10 +62,19 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
 
   Future<void> loadMessagesFromJson() async {
     try {
-      String jsonData = await rootBundle.loadString('/json/chats.json');
-      List<dynamic> jsonResult = jsonDecode(jsonData);
-      messages = jsonResult.map((item) => Message.fromJson(item)).toList();
-      add(MessagesLoaded());
+      // Replace 'YOUR_CUSTOM_URL' with the actual URL to your JSON file
+      final response = await http
+          .get(Uri.parse('https://api.npoint.io/629520e626c95525593f'));
+
+      if (response.statusCode == 200) {
+        final jsonData = response.body;
+        List<dynamic> jsonResult = jsonDecode(jsonData);
+        messages = jsonResult.map((item) => Message.fromJson(item)).toList();
+        add(MessagesLoaded());
+      } else {
+        print(
+            'Failed to load messages from JSON. Status code: ${response.statusCode}');
+      }
     } catch (error) {
       print('Error loading messages from JSON: $error');
     }

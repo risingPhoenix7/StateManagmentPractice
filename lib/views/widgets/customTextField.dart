@@ -59,13 +59,13 @@ class _CustomTextFieldState extends State<CustomTextField> {
                         state.replyMessage.text,
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
-                        style: TextStyle(
+                        style: const TextStyle(
                           fontSize: 16.0,
                         ),
                       ),
                     ),
                     IconButton(
-                      icon: Icon(Icons.close),
+                      icon: const Icon(Icons.close),
                       onPressed: () {
                         BlocProvider.of<ChatBloc>(context)
                             .add(MessageReplyDisabled());

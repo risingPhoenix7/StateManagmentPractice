@@ -24,24 +24,26 @@ class _ViewChatsPageState extends State<ViewChatsPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: BlocBuilder<ChatBloc, ChatState>(
-        buildWhen: (previous, current) {
-          if (current is MessagesUpdated && previous is ChatInitial) {
-            return true;
-          }
-          return false;
-        },
-        builder: (context, state) {
-          if (state is MessagesUpdated) {
-            return const Column(children: [
-              ChatMessageWidget(isLeft: true),
-              ChatMessageWidget(isLeft: false)
-            ]);
-          }
-          return const SizedBox(
-              width: 50, height: 50, child: CircularProgressIndicator());
-        },
+    return SafeArea(
+      child: Scaffold(
+        body: BlocBuilder<ChatBloc, ChatState>(
+          buildWhen: (previous, current) {
+            if (current is MessagesUpdated && previous is ChatInitial) {
+              return true;
+            }
+            return false;
+          },
+          builder: (context, state) {
+            if (state is MessagesUpdated) {
+              return const Column(children: [
+                ChatMessageWidget(isLeft: true),
+                ChatMessageWidget(isLeft: false)
+              ]);
+            }
+            return const SizedBox(
+                width: 50, height: 50, child: CircularProgressIndicator());
+          },
+        ),
       ),
     );
   }
