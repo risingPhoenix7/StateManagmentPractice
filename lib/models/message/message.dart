@@ -1,17 +1,25 @@
-import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:hive/hive.dart';
 
-part 'message.freezed.dart';
 part 'message.g.dart';
 
-@freezed
-class Message with _$Message {
-  const factory Message({
-    required bool isLeft,
-    required String text,
-    required DateTime dateTime,
-    int? replyToIndex,
-    String? emoji,
-  }) = _Message;
+@HiveType(typeId: 0)
+class Message extends HiveObject {
+  Message({
+    required this.isLeft,
+    required this.text,
+    required this.dateTime,
+    this.replyToIndex,
+    this.emoji,
+  });
 
-  factory Message.fromJson(Map<String, dynamic> json) => _$MessageFromJson(json);
+  @HiveField(0)
+  bool isLeft;
+  @HiveField(2)
+  String text;
+  @HiveField(3)
+  DateTime dateTime;
+  @HiveField(5)
+  int? replyToIndex;
+  @HiveField(6)
+  String? emoji;
 }

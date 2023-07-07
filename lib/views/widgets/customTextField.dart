@@ -33,6 +33,8 @@ class _CustomTextFieldState extends State<CustomTextField> {
     setState(() {
       _isComposing = false;
     });
+    FocusScope.of(context).unfocus();
+
   }
 
   @override

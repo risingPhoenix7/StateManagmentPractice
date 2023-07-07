@@ -2,6 +2,8 @@ import 'dart:convert';
 
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:hive/hive.dart';
+import 'package:jio_task/constants/boxNames.dart';
 import 'package:jio_task/models/message/message.dart';
 import 'package:jio_task/models/user/user.dart';
 import 'package:http/http.dart' as http;
@@ -20,6 +22,8 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
 
     on<NewMessage>((event, emit) {
       messages.add(event.message);
+      final box = Hive.box<Message>(BoxNames.messageBox);
+      box.add(event.message);
       emit(MessagesUpdated(List.from(messages)));
     });
 
@@ -27,14 +31,14 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
       editingMessageIndex = event.messageIndex;
     });
 
-    on<EmojiSelected>((event, emit) {
-      if (editingMessageIndex != null && editingMessageIndex! >= 0) {
-        messages[editingMessageIndex!] =
-            messages[editingMessageIndex!].copyWith(emoji: event.emoji);
-        emit(MessagesUpdated(List.from(messages)));
-        editingMessageIndex = null;
-      }
-    });
+    // on<EmojiSelected>((event, emit) {
+    //   if (editingMessageIndex != null && editingMessageIndex! >= 0) {
+    //     messages[editingMessageIndex!] =
+    //         messages[editingMessageIndex!].copyWith(emoji: event.emoji);
+    //     emit(MessagesUpdated(List.from(messages)));
+    //     editingMessageIndex = null;
+    //   }
+    // });
 
     on<MessageReply>((event, emit) {
       emit(ReplyModeEnabled(messages[messages.length - event.messageIndex - 1],
@@ -52,31 +56,25 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
 
   User getUserDetails(bool isLeft) {
     return isLeft
-        ? const User(id: 1, profilePic: "assets/images/naruto.png", name: 'Naruto')
-        : const User(id: 2, profilePic: "assets/images/sasuke.jpg", name: 'Sasuke');
+        ? const User(
+            id: 1, profilePic: "assets/images/naruto.png", name: 'Naruto')
+        : const User(
+            id: 2, profilePic: "assets/images/sasuke.jpg", name: 'Sasuke');
   }
 
-  Message getLastMessage() {
+  Message? getLastMessage() {
+    if (messages.isEmpty) {
+return null;    }
     return messages.last;
   }
 
-  Future<void> loadMessagesFromJson() async {
+  Future<void> loadMessagesFromDb() async {
     try {
-      // Replace 'YOUR_CUSTOM_URL' with the actual URL to your JSON file
-      final response = await http
-          .get(Uri.parse('https://api.npoint.io/629520e626c95525593f'));
-
-      if (response.statusCode == 200) {
-        final jsonData = response.body;
-        List<dynamic> jsonResult = jsonDecode(jsonData);
-        messages = jsonResult.map((item) => Message.fromJson(item)).toList();
-        add(MessagesLoaded());
-      } else {
-        print(
-            'Failed to load messages from JSON. Status code: ${response.statusCode}');
-      }
+      final box = Hive.box<Message>(BoxNames.messageBox);
+      messages = box.values.toList().cast<Message>();
+      add(MessagesLoaded());
     } catch (error) {
-      print('Error loading messages from JSON: $error');
+      print('Error loading messages from box: $error');
     }
   }
 

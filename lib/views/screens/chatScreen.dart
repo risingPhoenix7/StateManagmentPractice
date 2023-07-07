@@ -69,7 +69,8 @@ class _ChatScreenState extends State<ChatScreen> {
                   ),
                 ),
               ),
-              Text(otherUser.name, style: Theme.of(context).textTheme.headline6!),
+              Text(otherUser.name,
+                  style: Theme.of(context).textTheme.headline6!),
             ]),
           ),
         ),
@@ -87,9 +88,10 @@ class _ChatScreenState extends State<ChatScreen> {
               } catch (e) {
                 print(e);
               }
-            } else if (state is ScrollToIndex && state.isLeft == widget.isLeft) {
+            } else if (state is ScrollToIndex &&
+                state.isLeft == widget.isLeft) {
               print("Scrolling to index ${state.index}");
-              try{
+              try {
                 itemScrollController.scrollTo(
                     index: messages.length - state.index - 1,
                     duration: const Duration(milliseconds: 600),
@@ -101,24 +103,33 @@ class _ChatScreenState extends State<ChatScreen> {
             return Column(children: <Widget>[
               Flexible(
                 child: ScrollablePositionedList.builder(
+                  itemCount: messages.length,
                   physics: const BouncingScrollPhysics(),
                   itemScrollController: itemScrollController,
                   reverse: true,
                   padding: const EdgeInsets.all(8.0),
                   itemBuilder: (_, int index) {
-                    int actualIndex = messages.length - 1 - index;
-                    return ChatMessageWidget(
-                      message: messages[actualIndex],
-                      indexInList: index,
-                      isLeft: widget.isLeft,
-                      isFirstMessage: actualIndex == 0 ||
-                          ((messages[actualIndex].dateTime.day !=
-                              messages[actualIndex - 1].dateTime.day)||(messages[actualIndex].dateTime.month !=
-                              messages[actualIndex - 1].dateTime.month)||(messages[actualIndex].dateTime.year !=
-                              messages[actualIndex - 1].dateTime.year)),
-                    );
+                    if (index < messages.length&&index>=0) {
+                      print("Index: $index");
+                      int actualIndex = messages.length - 1 - index;
+                      print(actualIndex);
+                      return ChatMessageWidget(
+                        message: messages[actualIndex],
+                        indexInList: index,
+                        isLeft: widget.isLeft,
+                        isFirstMessage: actualIndex == 0 ||
+                            ((messages[actualIndex].dateTime.day !=
+                                messages[actualIndex - 1].dateTime.day) ||
+                                (messages[actualIndex].dateTime.month !=
+                                    messages[actualIndex - 1].dateTime.month) ||
+                                (messages[actualIndex].dateTime.year !=
+                                    messages[actualIndex - 1].dateTime.year)),
+                      );
+                    } else {
+                      return Container();  // This tells the ListView.builder not to build any more items.
+                    }
                   },
-                  itemCount: messages.length,
+
                 ),
               ),
               const Divider(height: 1.0),

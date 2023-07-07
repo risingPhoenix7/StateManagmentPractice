@@ -18,7 +18,7 @@ class ViewChatsPage extends StatefulWidget {
 class _ViewChatsPageState extends State<ViewChatsPage> {
   @override
   void initState() {
-    BlocProvider.of<ChatBloc>(context).loadMessagesFromJson();
+    BlocProvider.of<ChatBloc>(context).loadMessagesFromDb();
     super.initState();
   }
 
@@ -26,6 +26,7 @@ class _ViewChatsPageState extends State<ViewChatsPage> {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
+        appBar: AppBar(title: const Text('Chat App'),backgroundColor: Colors.green,),
         body: BlocBuilder<ChatBloc, ChatState>(
           buildWhen: (previous, current) {
             if (current is MessagesUpdated && previous is ChatInitial) {
@@ -103,18 +104,18 @@ class ChatMessageWidget extends StatelessWidget {
                   const SizedBox(height: 5),
                   // Space between name and message
                   BlocBuilder<ChatBloc, ChatState>(builder: (context, state) {
-                    Message lastMessage = chatBloc.getLastMessage();
+                    Message? lastMessage = chatBloc.getLastMessage();
                     return Row(
                       children: [
                         Text(
-                          "${lastMessage.isLeft != isLeft ? otherUser.name : 'You'}: ",
+                          lastMessage==null?"":"${lastMessage.isLeft != isLeft ? otherUser.name : 'You'}: ",
                           style: TextStyle(
                               fontWeight: FontWeight.bold,
                               color: Colors.grey[700]),
                         ),
                         Expanded(
                           child: Text(
-                            lastMessage.text,
+                            lastMessage==null?"": lastMessage.text,
                             overflow: TextOverflow.ellipsis,
                             maxLines: 1,
                             style: TextStyle(color: Colors.grey[700]),
@@ -127,9 +128,9 @@ class ChatMessageWidget extends StatelessWidget {
               ),
             ),
             BlocBuilder<ChatBloc, ChatState>(builder: (context, state) {
-              Message lastMessage = chatBloc.getLastMessage();
+              Message? lastMessage = chatBloc.getLastMessage();
               return Text(
-                DateFormat('h:mm a').format(lastMessage.dateTime),
+                lastMessage==null?"": DateFormat('h:mm a').format(lastMessage.dateTime),
                 style: const TextStyle(color: Colors.grey, fontSize: 12),
               );
             }),

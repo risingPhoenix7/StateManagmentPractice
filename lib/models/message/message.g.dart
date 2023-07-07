@@ -3,22 +3,51 @@
 part of 'message.dart';
 
 // **************************************************************************
-// JsonSerializableGenerator
+// TypeAdapterGenerator
 // **************************************************************************
 
-_$_Message _$$_MessageFromJson(Map<String, dynamic> json) => _$_Message(
-      isLeft: json['isLeft'] as bool,
-      text: json['text'] as String,
-      dateTime: DateTime.parse(json['dateTime'] as String),
-      replyToIndex: json['replyToIndex'] as int?,
-      emoji: json['emoji'] as String?,
-    );
+class MessageAdapter extends TypeAdapter<Message> {
+  @override
+  final int typeId = 0;
 
-Map<String, dynamic> _$$_MessageToJson(_$_Message instance) =>
-    <String, dynamic>{
-      'isLeft': instance.isLeft,
-      'text': instance.text,
-      'dateTime': instance.dateTime.toIso8601String(),
-      'replyToIndex': instance.replyToIndex,
-      'emoji': instance.emoji,
+  @override
+  Message read(BinaryReader reader) {
+    final numOfFields = reader.readByte();
+    final fields = <int, dynamic>{
+      for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
+    return Message(
+      isLeft: fields[0] as bool,
+      text: fields[2] as String,
+      dateTime: fields[3] as DateTime,
+      replyToIndex: fields[5] as int?,
+      emoji: fields[6] as String?,
+    );
+  }
+
+  @override
+  void write(BinaryWriter writer, Message obj) {
+    writer
+      ..writeByte(5)
+      ..writeByte(0)
+      ..write(obj.isLeft)
+      ..writeByte(2)
+      ..write(obj.text)
+      ..writeByte(3)
+      ..write(obj.dateTime)
+      ..writeByte(5)
+      ..write(obj.replyToIndex)
+      ..writeByte(6)
+      ..write(obj.emoji);
+  }
+
+  @override
+  int get hashCode => typeId.hashCode;
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is MessageAdapter &&
+          runtimeType == other.runtimeType &&
+          typeId == other.typeId;
+}
