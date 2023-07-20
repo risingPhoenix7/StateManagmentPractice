@@ -10,6 +10,8 @@ class Message extends HiveObject {
     required this.dateTime,
     this.replyToIndex,
     this.emoji,
+    this.deletedByLeft = false,
+    this.deletedByRight = false,
   });
 
   @HiveField(0)
@@ -22,4 +24,8 @@ class Message extends HiveObject {
   int? replyToIndex;
   @HiveField(6)
   String? emoji;
+  @HiveField(7)
+  bool deletedByLeft;
+  @HiveField(8)
+  bool deletedByRight;
 }

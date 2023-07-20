@@ -22,13 +22,15 @@ class MessageAdapter extends TypeAdapter<Message> {
       dateTime: fields[3] as DateTime,
       replyToIndex: fields[5] as int?,
       emoji: fields[6] as String?,
+      deletedByLeft: fields[7] as bool,
+      deletedByRight: fields[8] as bool,
     );
   }
 
   @override
   void write(BinaryWriter writer, Message obj) {
     writer
-      ..writeByte(5)
+      ..writeByte(7)
       ..writeByte(0)
       ..write(obj.isLeft)
       ..writeByte(2)
@@ -38,7 +40,11 @@ class MessageAdapter extends TypeAdapter<Message> {
       ..writeByte(5)
       ..write(obj.replyToIndex)
       ..writeByte(6)
-      ..write(obj.emoji);
+      ..write(obj.emoji)
+      ..writeByte(7)
+      ..write(obj.deletedByLeft)
+      ..writeByte(8)
+      ..write(obj.deletedByRight);
   }
 
   @override

@@ -35,6 +35,8 @@ class _ViewChatsPageState extends State<ViewChatsPage> {
             return false;
           },
           builder: (context, state) {
+            print(state);
+            print("Rebuilding");
             if (state is MessagesUpdated) {
               return const Column(children: [
                 ChatMessageWidget(isLeft: true),
@@ -88,7 +90,7 @@ class ChatMessageWidget extends StatelessWidget {
         child: Row(
           children: <Widget>[
             CircleAvatar(
-              backgroundImage: AssetImage(otherUser.profilePic),
+              backgroundImage: NetworkImage(otherUser.profilePic),
               radius: 30,
             ),
             const SizedBox(width: 10),

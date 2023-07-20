@@ -9,6 +9,7 @@ class MessagesUpdated extends ChatState {
 
   MessagesUpdated(this.messages);
 }
+
 class ReplyModeEnabled extends ChatState {
   final Message replyMessage;
   final int replyIndex;
@@ -25,3 +26,8 @@ class ScrollToIndex extends ChatState {
 
   ScrollToIndex(this.index, this.isLeft);
 }
+
+class ShowDeleteDialog extends ChatState {}
+class DisableDeleteDialog extends ChatState {}
+class UnSelectAllMessages extends ChatState {}
+class DeleteMessagesState extends ChatState {}

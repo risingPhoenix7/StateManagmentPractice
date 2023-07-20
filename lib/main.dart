@@ -12,10 +12,6 @@ void main() async {
   await Hive.initFlutter();
   Hive.registerAdapter(MessageAdapter());
   await Hive.openBox<Message>(BoxNames.messageBox);
-  if (Hive.box<Message>(BoxNames.messageBox).isEmpty) {
-    await Hive.box<Message>(BoxNames.messageBox)
-        .add(Message(isLeft: true, dateTime: DateTime.now(), text: 'Hello'));
-  }
   runApp(MyApp());
 }
 

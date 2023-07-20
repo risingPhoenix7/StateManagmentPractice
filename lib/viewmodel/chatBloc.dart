@@ -13,10 +13,13 @@ import 'chatState.dart';
 
 class ChatBloc extends Bloc<ChatEvent, ChatState> {
   List<Message> messages = [];
-  int? editingMessageIndex;
+  List<int> editingMessageIndices = [];
+  bool editingIsLeft = false;
+  List<User> userDetails = [];
 
   ChatBloc() : super(ChatInitial()) {
     on<MessagesLoaded>((event, emit) {
+      print("MessagesLoaded");
       emit(MessagesUpdated(messages));
     });
 
@@ -28,7 +31,23 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
     });
 
     on<MessageLongPressed>((event, emit) {
-      editingMessageIndex = event.messageIndex;
+      editingMessageIndices.add(event.messageIndex);
+      if (editingMessageIndices.length == 1) {
+        emit(ShowDeleteDialog());
+      }
+    });
+
+    on<MessageLongPressedDisabled>((event, emit) {
+      editingMessageIndices.remove(event.messageIndex);
+      if (editingMessageIndices.isEmpty) {
+        emit(DisableDeleteDialog());
+      }
+    });
+
+    on<RemoveAllLongPressed>((event, emit) {
+      editingMessageIndices.clear();
+      emit(DisableDeleteDialog());
+      emit(UnSelectAllMessages());
     });
 
     // on<EmojiSelected>((event, emit) {
@@ -52,26 +71,43 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
     on<GoToIndex>((event, emit) {
       emit(ScrollToIndex(event.index, event.isLeft));
     });
+
+    on<DeleteMessages>((event, emit) {
+      emit(DeleteMessagesState());
+    });
   }
 
   User getUserDetails(bool isLeft) {
-    return isLeft
-        ? const User(
-            id: 1, profilePic: "assets/images/naruto.png", name: 'Naruto')
-        : const User(
-            id: 2, profilePic: "assets/images/sasuke.jpg", name: 'Sasuke');
+    print("getUserDetails");
+    print(userDetails.length);
+    return isLeft ? userDetails[0] : userDetails[1];
   }
 
   Message? getLastMessage() {
     if (messages.isEmpty) {
-return null;    }
+      return null;
+    }
     return messages.last;
+  }
+
+  Future<void> loadUserDetails() async {
+    final url = Uri.parse('https://api.npoint.io/71d0b4ec84f4f552b056');
+    final response = await http.get(url);
+    if (response.statusCode == 200) {
+      List<dynamic> decodedResponseBody = json.decode(response.body);
+      userDetails.addAll(decodedResponseBody
+          .map((userJson) => User.fromJson(userJson as Map<String, dynamic>)));
+      print("Got http details");
+    } else {
+      throw Exception('Failed to load users');
+    }
   }
 
   Future<void> loadMessagesFromDb() async {
     try {
       final box = Hive.box<Message>(BoxNames.messageBox);
       messages = box.values.toList().cast<Message>();
+      await loadUserDetails();
       add(MessagesLoaded());
     } catch (error) {
       print('Error loading messages from box: $error');
