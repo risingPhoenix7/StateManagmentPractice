@@ -28,4 +28,11 @@ class Message extends HiveObject {
   bool deletedByLeft;
   @HiveField(8)
   bool deletedByRight;
+
+
+  void deleteMessage(isLeft) {
+    isLeft ? deletedByLeft = true : deletedByRight = true;
+  }
 }
+
+

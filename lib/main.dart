@@ -19,10 +19,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Chat App',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-      ),
+      title: 'Jio Chat',
       home: BlocProvider(
         create: (context) {
           var chatBloc = ChatBloc();

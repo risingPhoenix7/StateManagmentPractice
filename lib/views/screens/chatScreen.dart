@@ -66,6 +66,7 @@ class _ChatScreenState extends State<ChatScreen> {
                       current is ShowDeleteDialog ||
                       current is DisableDeleteDialog,
                   builder: (context, state) {
+                    print("delete rebuild");
                     if (state is ShowDeleteDialog) {
                       return Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -84,7 +85,7 @@ class _ChatScreenState extends State<ChatScreen> {
                           ),
                           IconButton(
                               onPressed: () {
-                                // chatBloc.add(DeleteMessages());
+                                chatBloc.add(DeleteMessages(isLeft: widget.isLeft));
                               },
                               icon: const Icon(Icons.delete))
                         ],
@@ -102,7 +103,7 @@ class _ChatScreenState extends State<ChatScreen> {
                                 // Custom back button without padding
                                 CircleAvatar(
                                   backgroundImage:
-                                  NetworkImage(otherUser.profilePic),
+                                      NetworkImage(otherUser.profilePic),
                                 ),
                               ],
                             ),
@@ -143,34 +144,44 @@ class _ChatScreenState extends State<ChatScreen> {
               }
               return Column(children: <Widget>[
                 Flexible(
-                  child: messages.isNotEmpty?ScrollablePositionedList.builder(
-                    itemCount: messages.length,
-                    physics: const BouncingScrollPhysics(),
-                    itemScrollController: itemScrollController,
-                    reverse: true,
-                    padding: const EdgeInsets.all(8.0),
-                    itemBuilder: (_, int index) {
-                      print("Index: $index");
-                      int actualIndex = messages.length - 1 - index;
-                      print(actualIndex);
-                      return ChatMessageWidget(
-                        message: messages[actualIndex],
-                        indexInList: index,
-                        isLeft: widget.isLeft,
-                        isFirstMessage: actualIndex == 0 ||
-                            ((messages[actualIndex].dateTime.day !=
-                                    messages[actualIndex - 1].dateTime.day) ||
-                                (messages[actualIndex].dateTime.month !=
-                                    messages[actualIndex - 1].dateTime.month) ||
-                                (messages[actualIndex].dateTime.year !=
-                                    messages[actualIndex - 1].dateTime.year)),
-                      );
-                    },
-                  ):Container(
-                    alignment: Alignment.center,
-                    child: Text("No messages yet"),
-                  )
-                ),
+                    child: messages.isNotEmpty
+                        ? ScrollablePositionedList.builder(
+                            itemCount: messages.length,
+                            physics: const BouncingScrollPhysics(),
+                            itemScrollController: itemScrollController,
+                            reverse: true,
+                            padding: const EdgeInsets.all(8.0),
+                            itemBuilder: (_, int index) {
+                              print("Index: $index");
+                              int actualIndex = messages.length - 1 - index;
+                              print(actualIndex);
+                              return ChatMessageWidget(
+                                message: messages[actualIndex],
+                                indexInList: index,
+                                isLeft: widget.isLeft,
+                                isVisible: widget.isLeft
+                                    ? !messages[actualIndex].deletedByLeft
+                                    : !messages[actualIndex].deletedByRight,
+                                isFirstMessage: actualIndex == 0 ||
+                                    ((messages[actualIndex].dateTime.day !=
+                                            messages[actualIndex - 1]
+                                                .dateTime
+                                                .day) ||
+                                        (messages[actualIndex].dateTime.month !=
+                                            messages[actualIndex - 1]
+                                                .dateTime
+                                                .month) ||
+                                        (messages[actualIndex].dateTime.year !=
+                                            messages[actualIndex - 1]
+                                                .dateTime
+                                                .year)),
+                              );
+                            },
+                          )
+                        : Container(
+                            alignment: Alignment.center,
+                            child: Text("No messages yet"),
+                          )),
                 const Divider(height: 1.0),
                 Container(
                     width: MediaQuery.of(context).size.width,

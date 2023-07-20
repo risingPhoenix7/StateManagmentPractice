@@ -7,6 +7,7 @@ import 'package:jio_task/constants/boxNames.dart';
 import 'package:jio_task/models/message/message.dart';
 import 'package:jio_task/models/user/user.dart';
 import 'package:http/http.dart' as http;
+import 'package:jio_task/viewmodel/hiveFunctions.dart';
 import 'dart:convert';
 import 'chatEvent.dart';
 import 'chatState.dart';
@@ -72,8 +73,15 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
       emit(ScrollToIndex(event.index, event.isLeft));
     });
 
-    on<DeleteMessages>((event, emit) {
+    on<DeleteMessages>((event, emit) async {
+      for (int i = 0; i < editingMessageIndices.length; i++) {
+        await HiveFunctions.deleteMessage(
+            event.isLeft, editingMessageIndices[i]);
+        messages[editingMessageIndices[i]].deleteMessage(event.isLeft);
+      }
+      editingMessageIndices.clear();
       emit(DeleteMessagesState());
+      emit(DisableDeleteDialog());
     });
   }
 
@@ -105,8 +113,7 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
 
   Future<void> loadMessagesFromDb() async {
     try {
-      final box = Hive.box<Message>(BoxNames.messageBox);
-      messages = box.values.toList().cast<Message>();
+      messages = HiveFunctions.getMessages();
       await loadUserDetails();
       add(MessagesLoaded());
     } catch (error) {

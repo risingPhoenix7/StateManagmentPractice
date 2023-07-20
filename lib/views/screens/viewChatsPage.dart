@@ -26,7 +26,7 @@ class _ViewChatsPageState extends State<ViewChatsPage> {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-        appBar: AppBar(title: const Text('Chat App'),backgroundColor: Colors.green,),
+        appBar: AppBar(title: const Text('Jio Chat'),backgroundColor: Colors.red,),
         body: BlocBuilder<ChatBloc, ChatState>(
           buildWhen: (previous, current) {
             if (current is MessagesUpdated && previous is ChatInitial) {
@@ -110,7 +110,7 @@ class ChatMessageWidget extends StatelessWidget {
                     return Row(
                       children: [
                         Text(
-                          lastMessage==null?"":"${lastMessage.isLeft != isLeft ? otherUser.name : 'You'}: ",
+                          lastMessage==null?"Hey there! I am using Jio Chat":"${lastMessage.isLeft != isLeft ? otherUser.name : 'You'}: ",
                           style: TextStyle(
                               fontWeight: FontWeight.bold,
                               color: Colors.grey[700]),
