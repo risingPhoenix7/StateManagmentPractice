@@ -47,6 +47,7 @@ class _ChatMessageWidgetState extends State<ChatMessageWidget> {
       } else if (current is DeleteMessagesState) {
         if (chatBloc.editingMessageIndices.contains(widget.indexInList)) {
           isVisible = false;
+          isSelected=false;
           return true;
         }
       }

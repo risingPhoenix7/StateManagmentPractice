@@ -43,8 +43,13 @@ class _ViewChatsPageState extends State<ViewChatsPage> {
                 ChatMessageWidget(isLeft: false)
               ]);
             }
-            return const SizedBox(
-                width: 50, height: 50, child: CircularProgressIndicator());
+            return Center(
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: const SizedBox(
+                    width: 50, height: 50, child: CircularProgressIndicator()),
+              ),
+            );
           },
         ),
       ),

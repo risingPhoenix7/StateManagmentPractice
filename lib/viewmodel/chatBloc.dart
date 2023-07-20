@@ -82,6 +82,7 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
       editingMessageIndices.clear();
       emit(DeleteMessagesState());
       emit(DisableDeleteDialog());
+      emit(UnSelectAllMessages());
     });
   }
 
