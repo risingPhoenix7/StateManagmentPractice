@@ -1,16 +1,6 @@
-# jio_task
+# Jio Task: Chat Application
+A  Flutter project focusing on state management using the BLoC pattern, as a part of the task at Jio Platforms Ltd.
 
-A new Flutter project.
+## Project Overview
+This application is built using the standard state management protocol, BLoC. You can learn more about the BLoC pattern [here](https://pub.dev/packages/flutter_bloc).
 
-## Getting Started
-
-This project is a starting point for a Flutter application.
-
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
